@@ -255,8 +255,6 @@ def get_package_version():
         return str(public_version)
 
 
-PYTORCH_VERSION = "2.4.0"
-MAIN_CUDA_VERSION = "12.1"
 
 
 def get_nvcc_cuda_version() -> Version:
@@ -281,9 +279,15 @@ def get_version() -> str:
         version += f"+cu{cuda_version_str}"
     return version
 
+PYTORCH_VERSION = "2.4.0"
+MAIN_CUDA_VERSION = get_nvcc_cuda_version()
 
 ext_modules.append(CMakeExtension(name="vllm_flash_attn._vllm_fa2_C"))
-ext_modules.append(CMakeExtension(name="vllm_flash_attn._vllm_fa3_C"))
+if MAIN_CUDA_VERSION < Version("12.1"):
+    print("cannot use flash attention v3 with cuda < 12.1")
+else:
+    ext_modules.append(CMakeExtension(name="vllm_flash_attn._vllm_fa3_C"))
+
 
 setup(
     name="vllm-flash-attn",
