@@ -279,7 +279,7 @@ def get_version() -> str:
         version += f"+cu{cuda_version_str}"
     return version
 
-PYTORCH_VERSION = "2.4.0"
+PYTORCH_VERSION = torch.__version__
 MAIN_CUDA_VERSION = get_nvcc_cuda_version()
 
 ext_modules.append(CMakeExtension(name="vllm_flash_attn._vllm_fa2_C"))
